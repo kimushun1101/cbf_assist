@@ -16,11 +16,11 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
-add_executable(assit_control src/human_assist_controller.cpp)
-ament_target_dependencies(assit_control rclcpp sensor_msgs geometry_msgs)
+add_executable(controller src/human_assist_controller.cpp)
+ament_target_dependencies(controller rclcpp sensor_msgs geometry_msgs)
 
 install(TARGETS
-  assit_control
+  controller
   DESTINATION lib/${PROJECT_NAME})
 
 # Install launch files.

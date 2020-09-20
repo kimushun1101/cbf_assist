@@ -12,6 +12,6 @@ def generate_launch_description():
         ),
         Node(  
             package='cbf_assist',
-            node_executable='assit_control',
+            node_executable='controller',
         )
     ])

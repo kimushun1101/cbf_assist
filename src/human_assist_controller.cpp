@@ -22,7 +22,7 @@ public:
   : Node("human_assist_controller")
   {
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
-      "cmd_vel_human_input", 10, std::bind(&HumanAssistController::human_input_callback, this, _1));
+      "human_vel", 10, std::bind(&HumanAssistController::human_input_callback, this, _1));
     scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
       "scan", rclcpp::SensorDataQoS(), std::bind(&HumanAssistController::scan_callback, this, _1));
     cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);

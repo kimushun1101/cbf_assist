@@ -1,10 +1,6 @@
 #ifndef HUMAN_ASSIST_CONTROLLER_HPP_
 #define HUMAN_ASSIST_CONTROLLER_HPP_
 
-const static float K = 0.1;
-const static float C = 0.1;
-const static float L = 0.001;
-
 #include <functional>
 #include <memory>
 #include <chrono>
@@ -25,8 +21,10 @@ private:
   void human_input_callback(geometry_msgs::msg::Twist::SharedPtr msg);
   void scan_callback(sensor_msgs::msg::LaserScan::SharedPtr msg);
   void timer_callback();
+  void param_update_timer_callback();
 
   rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr param_update_timer_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
   rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;
@@ -36,6 +34,7 @@ private:
   float r_bi, dr_bi_dtheta;
   float B, LgpB1, LgpB2, LgpB_sq;
   double I, J;
+  float K, C, L;
 };
 
 #endif // HUMAN_ASSIST_CONTROLLER_HPP_

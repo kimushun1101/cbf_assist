@@ -6,6 +6,13 @@ using namespace std::chrono_literals;
 HumanAssistController::HumanAssistController()
 : Node("human_assist_controller")
 {
+  this->declare_parameter<std::float_t>("ctrl_param_K", 0.1);
+  this->declare_parameter<std::float_t>("ctrl_param_C", 0.1);
+  this->declare_parameter<std::float_t>("ctrl_param_L", 0.001);
+  this->get_parameter("ctrl_param_K", K);
+  this->get_parameter("ctrl_param_C", C);
+  this->get_parameter("ctrl_param_L", L);
+
   cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
     "human_vel", 10, std::bind(&HumanAssistController::human_input_callback, this, _1));
   scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
@@ -13,6 +20,8 @@ HumanAssistController::HumanAssistController()
   cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 10);
   timer_ = this->create_wall_timer(
     1ms, std::bind(&HumanAssistController::timer_callback, this));
+  param_update_timer_ = this->create_wall_timer(
+    1000ms, std::bind(&HumanAssistController::param_update_timer_callback, this));
   RCLCPP_INFO(this->get_logger(), "Human assist control node has been initialised");
 }
 
@@ -74,6 +83,14 @@ void HumanAssistController::timer_callback()
   message.linear.x = u1 + u_h1;
   message.angular.z = u2 + u_h2;
   cmd_vel_pub_->publish(message);
+}
+
+void HumanAssistController::param_update_timer_callback()
+{
+  this->get_parameter("ctrl_param_K", K);
+  this->get_parameter("ctrl_param_C", C);
+  this->get_parameter("ctrl_param_L", L);
+  // RCLCPP_INFO(this->get_logger(), "K: '%f',    C: '%f',    L: '%f'", K, C, L);
 }
 
 int main(int argc, char * argv[])

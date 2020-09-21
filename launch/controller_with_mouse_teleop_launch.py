@@ -13,5 +13,12 @@ def generate_launch_description():
         Node(  
             package='cbf_assist',
             node_executable='controller',
+            output="screen",
+            parameters=[
+                {   "ctrl_param_K": 0.1,
+                    "ctrl_param_C": 0.1,
+                    "ctrl_param_L": 0.001
+                }
+            ]
         )
     ])

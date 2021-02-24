@@ -13,7 +13,7 @@ from launch.substitutions import TextSubstitution
 def generate_launch_description():
     joy_config = LaunchConfiguration('joy_config')
     joy_dev = LaunchConfiguration('joy_dev')
-    config_filepath = LaunchConfiguration('config_filepath')
+    config = os.path.join(get_package_share_directory('suitcase_teleop'), 'config', 'telop_param.yaml')
 
     return LaunchDescription([
         DeclareLaunchArgument('joy_config', default_value='f710'),
@@ -24,7 +24,7 @@ def generate_launch_description():
             joy_config, TextSubstitution(text='.config.yaml')]),
 
         Node(
-            package='joy', node_executable='joy_node', name='joy_node',
+            package='joy', executable='joy_node', name='joy_node',
             parameters=[{
                 'dev': joy_dev,
                 'deadzone': 0.3,
@@ -32,14 +32,14 @@ def generate_launch_description():
             }]),
 
         Node(
-            package='teleop_twist_joy', node_executable='teleop_node',
-            name='teleop_twist_joy_node', parameters=[config_filepath],
-            remappings=[('cmd_vel', '/human_vel'),]
-        ),
+            package='suitcase_teleop', executable='joy_control',
+            name='joy_control',
+            remappings=[('cmd_vel', '/human_vel')],
+            parameters=[config]),
 
         Node(  
-            package='cbf_assist',
-            node_executable='controller',
+            package='cbf_assist', executable='controller',
+            remappings=[('cmd_vel', '/cmd_vel2')],
             output="screen",
             parameters=[
                 {   "ctrl_param_K": 0.1,
